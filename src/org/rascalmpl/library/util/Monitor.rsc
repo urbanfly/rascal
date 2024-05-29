@@ -200,3 +200,29 @@ test bool simpleAsyncPrintTest() {
   jobEnd("job");
   return true;
 }
+
+test bool unfinishedInputTest() {
+  jobStart("job", totalWork=26);
+  for (/<l:[a-z]>/ := "abcdefghijklmnopqrstuwvxyz") {
+    print(l); // no newline!
+    jobStep("job", "letter <l>", work=1);
+    if (arbInt(10) == 0) {
+      println(); // break it
+    }
+  }
+  // println(); // flush it
+  jobEnd("job");
+  return true;
+}
+
+test bool unfinishedLinesAtTheEndTest() {
+  jobStart("job", totalWork=3);
+  print("ab\nc");
+  jobStep("job", "1.5", work=1);
+  print("d\ne");
+  jobStep("job", "2.5", work=1);
+  print("f\ngh\n");
+  jobStep("job", "3", work=1);
+  jobEnd("job");
+  return true;
+}
